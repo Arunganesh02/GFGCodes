@@ -17,13 +17,15 @@ class Solution:
         d = {}
         for i in range(len(adj)):
             d[i] = adj[i]
-        # print(d)
+
         visited = set()
         current = src
         parent = [-1] * len(adj)
         weight= [float('inf')] * len(adj)
         weight[src] = 0
+        
         while True:
+            
             for node in d[current]:
                 if node[0] not in visited:
                     cu = node[0]
@@ -31,22 +33,22 @@ class Solution:
                         weight[cu] = weight[current] + node[1]
                         parent[cu] = current
             visited.add(current)   
-            # print(weight)
+
             indi = -1
             wei = float('inf')
             for i in range(len(weight)):
                 if i not in visited and weight[i]<wei:
                     indi = i
                     wei = weight[i]
-            # print(indi,visited)
+ 
             if indi != -1:
                 current = indi
             else:
                 break
-            # if len(visited) == len(adj):
-            #     break
-        # print(weight)
+
         return weight
+        
+
 
 #{ 
  # Driver Code Starts.
