@@ -1,73 +1,46 @@
-#{ 
- # Driver Code Starts
-# Initial Template for Python 3
-import atexit
-import io
-import sys
 import heapq
-from typing import List, Tuple
-
-
-# } Driver Code Ends
 class Solution:
-    # Function to find the shortest distance of all the vertices
-    # from the source vertex src.
-    def dijkstra(self, adj: List[List[Tuple[int, int]]], src: int) -> List[int]:
-        # Your code here
+    # Returns shortest distances from src to all other vertices
+    def dijkstra(self, V, edges, src):
+        # code here
         d = {}
-        for i in range(len(adj)):
-            d[i] = adj[i]
-
-        visited = set()
-        current = src
-        parent = [-1] * len(adj)
-        weight= [float('inf')] * len(adj)
-        weight[src] = 0
-        
-        while True:
-            
-            for node in d[current]:
-                if node[0] not in visited:
-                    cu = node[0]
-                    if weight[cu] > weight[current] + node[1]  :
-                        weight[cu] = weight[current] + node[1]
-                        parent[cu] = current
-            visited.add(current)   
-
-            indi = -1
-            wei = float('inf')
-            for i in range(len(weight)):
-                if i not in visited and weight[i]<wei:
-                    indi = i
-                    wei = weight[i]
- 
-            if indi != -1:
-                current = indi
+        for u,v,w in edges:
+            if u not in d:
+                d[u] = [[v,w]]
             else:
-                break
-
-        return weight
+                d[u] += [[v,w]]
+                
         
 
-
-#{ 
- # Driver Code Starts.
-
-if __name__ == '__main__':
-    test_cases = int(input())
-    for cases in range(test_cases):
-        V, E = map(int, input().strip().split())
-        adj = [[] for _ in range(V)]
-        for _ in range(E):
-            u, v, w = map(int, input().strip().split())
-            adj[u].append((v, w))
-            adj[v].append((u, w))
-        src = int(input())
-        ob = Solution()
-
-        res = ob.dijkstra(adj, src)
-        for i in res:
-            print(i, end=" ")
-        print()
-        print("~")
-# } Driver Code Ends
+        weight = [float('inf') for i in range(V)]
+        visited = set()
+        weight[src] = 0
+        curr = src
+        li = [[0,src]]
+        heapq.heapify(li)
+        
+        while li:
+            curr_dist, curr = heapq.heappop(li)
+            if curr in visited:
+                continue
+            visited.add(curr)
+            
+            for node , dist in d[curr]:
+                if weight[curr] + dist <= weight[node] and node not in visited:
+                    weight[node] = weight[curr]+dist
+                    heapq.heappush(li , [weight[curr]+dist , node])              
+            
+            visited.add(curr)
+            
+            # minnode = -1
+            # mindist = float('inf')
+            # for i in range(V):
+            #     if weight[i]<mindist and i not in visited:
+            #         mindist = weight[i]
+            #         minnode = i
+            # curr = minnode
+            # if len(li)==0:
+            #     return weight
+            # ss = heapq.heappop(li)
+            # curr = ss[1]
+        return weight
